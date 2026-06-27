@@ -32,3 +32,39 @@ app.command("/sairbot-catfact", async ({ ack, respond }) => {
     await respond({ text: "⚠️ The cat fact service is temporarily offline. Please try again later." });
   }
 });
+
+app.command("/sairbot-rps", async ({ command, ack, respond }) => {
+  await ack();
+
+  try {
+    const userChoice = command.text.trim().toLowerCase();
+    const validChoices = ["rock", "paper", "scissors"];
+
+    if (!userChoice || !validChoices.includes(userChoice)) {
+      await respond({ text: "❌ Invalid choice! Please type rock, paper, or scissors after the command." });
+      return;
+    }
+
+    const botChoice = validChoices[Math.floor(Math.random() * validChoices.length)];
+
+    let result = "";
+    if (userChoice === botChoice) {
+      result = "👔 It's a tie game!";
+    } else if (
+      (userChoice === "rock" && botChoice === "scissors") ||
+      (userChoice === "paper" && botChoice === "rock") ||
+      (userChoice === "scissors" && botChoice === "paper")
+    ) {
+      result = "🏆 You win!";
+    } else {
+      result = "🤖 SairBot wins!";
+    }
+
+    await respond({
+      text: `${result} | 🎮 Match Result -> Your Choice: ${userChoice.toUpperCase()} | SairBot: ${botChoice.toUpperCase()}`
+    });
+
+  } catch (err) {
+    await respond({ text: "⚠️ An error occurred while calculating the game results. Please try again." });
+  }
+});
